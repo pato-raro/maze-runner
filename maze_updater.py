@@ -5,14 +5,18 @@ import os
 import argparse
 from maze_displayer import play
 
+
 class Location:
     x = None
     y = None
+
     def __init__(self, x, y):
         self.x = x
         self.y = y
+
     def toList(self):
         return [self.x, self.y]
+
     def __eq__(self, other):
         if self.x == other.x and self.y == other.y:
             return True
@@ -51,7 +55,8 @@ class Map:
             self.width = data['width']
             self.height = data['height']
             self.obstacles = data['obstacles']
-            self.obstacles = [Location(obstacle[0], obstacle[1]) for obstacle in self.obstacles]
+            self.obstacles = [Location(obstacle[0], obstacle[1])
+                              for obstacle in self.obstacles]
             self.bot = Location(data['bot'][0], data['bot'][1])
             self.coin = Location(data['coin'][0], data['coin'][1])
             # self.obstacles = Location.sort(self.obstacles)
@@ -66,21 +71,22 @@ class Map:
         }
 
     def random_coin_location(self):
-        while True:
+        coin_position = [random.randint(
+                0, self.height - 1), random.randint(0, self.width - 1)]
+            
+        # Kiểm tra vị trí của đồng xu không trùng với vị trí của bot
+        # Kiểm tra vị trí của đồng xu không trùng với vị trí của vật cản
+        
+        while coin_position == self.bot.toList() or coin_position in [obstacle.toList() for obstacle in self.obstacles]:
             # Chọn vị trí ngẫu nhiên của đồng xu
-            coin_position = [random.randint(0, self.height - 1), random.randint(0, self.width - 1)]
+            coin_position = [random.randint(
+                0, self.height - 1), random.randint(0, self.width - 1)]
 
-            # Kiểm tra vị trí của đồng xu không trùng với vị trí của bot
-            if coin_position == self.bot.toList():
-                break
-            # Kiểm tra vị trí của đồng xu không trùng với vị trí của vật cản
-            if coin_position in [obstacle.toList() for obstacle in self.obstacles]:
-                break
-            # Trả về vị trí hợp lệ của đồng xu
-            self.coin = Location(coin_position[0], coin_position[1])
+        # Trả về vị trí hợp lệ của đồng xu
+        self.coin = Location(coin_position[0], coin_position[1])
 
     def writeMapAsJSON(self, path, data=''):
-        if (data ==''):
+        if (data == ''):
             data = {
                 'width': self.width,
                 'height': self.height,
@@ -95,13 +101,12 @@ class Map:
         print(self.getMapJSONAsDict())
 
 
-def updatePos(direction, map):
-    mapAsDict = map.getMapJSONAsDict()
-    currentPosY, currentPosX = mapAsDict['bot'][0], mapAsDict['bot'][1]
-    currentPosX = currentPosX + (1 if direction == 'down' else -1 if direction == 'up' else 0)
-    currentPosY = currentPosY + (1 if direction == 'right' else -1 if direction == 'left' else 0)
-    map.bot = Location(currentPosX, currentPosY)
+def updatePos(map):
+    if map.bot == map.coin:
+        map.bot.x = map.coin.x
+        map.bot.y = map.coin.y
     return map
+
 
 def getPathInp_Out():
     parser = argparse.ArgumentParser(description='Process some integers.')
@@ -115,20 +120,20 @@ def getPathInp_Out():
         raise
     return {'input': str(args.i), 'output': str(args.o)}
 
+
 def update():
     play()
     path = getPathInp_Out()
     myMap = Map(path['input'], path['output'])
     renderMap = []
-    inputDirection = myMap.getInput()
-    for direction in inputDirection:
-        newPos = updatePos(direction, myMap)
-        renderMap.append(myMap.getMapJSONAsDict())
+    updatePos(myMap)
+    renderMap.append(myMap.getMapJSONAsDict())
     myMap.printMapJSONAsDict()
     myMap.writeMapAsJSON('maze_render.json', renderMap)
     myMap.random_coin_location()
     myMap.writeMapAsJSON('maze_metadata.json')
     update()
+
 
 if __name__ == "__main__":
     update()
