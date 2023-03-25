@@ -3,6 +3,7 @@ import random
 from typing import List
 import os
 import argparse
+from maze_displayer import play
 
 class Location:
     x = None
@@ -67,7 +68,7 @@ class Map:
     def random_coin_location(self):
         while True:
             # Chọn vị trí ngẫu nhiên của đồng xu
-            coin_position = [random.randint(0, self.width - 1), random.randint(0, self.height - 1)]
+            coin_position = [random.randint(0, self.height - 1), random.randint(0, self.width - 1)]
 
             # Kiểm tra vị trí của đồng xu không trùng với vị trí của bot
             if coin_position == self.bot.toList():
@@ -114,7 +115,8 @@ def getPathInp_Out():
         raise
     return {'input': str(args.i), 'output': str(args.o)}
 
-if __name__ == "__main__":
+def update():
+    play()
     path = getPathInp_Out()
     myMap = Map(path['input'], path['output'])
     renderMap = []
@@ -126,3 +128,5 @@ if __name__ == "__main__":
     myMap.writeMapAsJSON('maze_render.json', renderMap)
     myMap.random_coin_location()
     myMap.writeMapAsJSON('maze_metadata.json')
+    update()
+update()

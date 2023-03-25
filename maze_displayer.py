@@ -1,47 +1,44 @@
 import pygame
-import json
+from maze_drawer import display, load_JSON_file, BOARD_SIZE
 
-def load_JSON_file(file_name):
-    file = open(file_name + '.json', 'r')
-    data = json.loads(file.read())
+WINDOW = pygame.display.set_mode(BOARD_SIZE)
+
+
+def load_text_file(file_name):
+    file = open(file_name + '.txt', 'r')
+    data = file.readlines()
     file.close()
     return data
 
 
-INIT_MAZE = load_JSON_file('maze_metadata')
+def play():
+    from bot import find_path
+    find_path()
+    ACTION_LIST = load_text_file('action')
+    MAZE = load_JSON_file('maze_metadata')
 
-INIT_WIDTH, INIT_HEIGHT, INIT_OBSTACLES, INIT_BOT, INIT_COIN = INIT_MAZE.values()
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+        for action in ACTION_LIST:
 
-CELL_SIZE = 40
-BOARD_SIZE = (INIT_WIDTH * CELL_SIZE, INIT_HEIGHT * CELL_SIZE)
+            BOT = MAZE['bot']
+            COIN = MAZE['coin']
+            action = action.strip()
+            if action == "down":
+                BOT[0] += 1
+            elif action == "up":
+                BOT[0] -= 1
+            elif action == "left":
+                BOT[1] -= 1
+            elif action == "right":
+                BOT[1] += 1
+            else:
+                continue
 
-SCALE = (CELL_SIZE, CELL_SIZE)
-
-
-def load_image(source, scale):
-    ORIGIN_IMAGE = pygame.image.load(source)
-    IMAGE = pygame.transform.scale(ORIGIN_IMAGE, scale)
-    return IMAGE
-
-
-BACKGROUND = load_image('assets/background.webp', BOARD_SIZE)
-BOT_IMAGE = load_image('assets/Granny.webp', SCALE)
-COIN_IMAGE = load_image('assets/R.png', SCALE)
-OBSTACLE_IMAGE = load_image('assets/obstacle.jpg', SCALE)
-
-WHITE = (255, 255, 255)
-
-
-def display(surface, maze):
-    # WINDOW.blit(BACKGROUND, (0, 0))
-    surface.fill(WHITE)
-    WIDTH, HEIGHT, OBSTACLES, BOT, COIN = maze.values()
-    for i in range(HEIGHT):
-        for j in range(WIDTH):
-            if [i, j] == BOT:
-                surface.blit(BOT_IMAGE, (j * CELL_SIZE, i * CELL_SIZE))
-            if [i, j] == COIN:
-                surface.blit(COIN_IMAGE, (j * CELL_SIZE, i * CELL_SIZE))
-            if [i, j] in OBSTACLES:
-                surface.blit(OBSTACLE_IMAGE, (j * CELL_SIZE, i * CELL_SIZE))
-    pygame.display.update()
+            pygame.time.wait(200)
+            display(WINDOW, MAZE)
+            if BOT == COIN:
+                return
