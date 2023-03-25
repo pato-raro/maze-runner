@@ -97,7 +97,7 @@ class Map:
 
 def updatePos(direction, map):
     mapAsDict = map.getMapJSONAsDict()
-    currentPosX, currentPosY = mapAsDict['bot'][0], mapAsDict['bot'][1]
+    currentPosY, currentPosX = mapAsDict['bot'][0], mapAsDict['bot'][1]
     currentPosX = currentPosX + (1 if direction == 'down' else -1 if direction == 'up' else 0)
     currentPosY = currentPosY + (1 if direction == 'right' else -1 if direction == 'left' else 0)
     map.bot = Location(currentPosX, currentPosY)
@@ -129,4 +129,6 @@ def update():
     myMap.random_coin_location()
     myMap.writeMapAsJSON('maze_metadata.json')
     update()
-update()
+
+if __name__ == "__main__":
+    update()

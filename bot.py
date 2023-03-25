@@ -60,7 +60,7 @@ grid_height = dt.data['height']
 grid_width = dt.data['width']
 queue = []  # store unvisited cells
 visited = []  # store visited cells
-path = []
+# path = []
 # initialize grid
 grid = []
 for row in range(grid_height):
@@ -165,6 +165,7 @@ def WriteToText(context, filename="action.txt"):
 
 #########
 def find_path():
+    path=[]
     single_path = CreatePath(grid, start, coin, queue, visited, path)
 
     print("This is all the paths that the bot've gone to:")
@@ -179,3 +180,5 @@ def find_path():
     print("Saving into action.txt")
 
     WriteToText(shortestPathStep)
+if __name__ == "__main__":
+    find_path()

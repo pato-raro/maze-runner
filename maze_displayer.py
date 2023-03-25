@@ -1,5 +1,7 @@
 import pygame
+import os
 from maze_drawer import display, load_JSON_file, BOARD_SIZE
+from bot import find_path
 
 WINDOW = pygame.display.set_mode(BOARD_SIZE)
 
@@ -12,8 +14,7 @@ def load_text_file(file_name):
 
 
 def play():
-    from bot import find_path
-    find_path()
+    os.system("python bot.py")
     ACTION_LIST = load_text_file('action')
     MAZE = load_JSON_file('maze_metadata')
 
@@ -42,3 +43,5 @@ def play():
             display(WINDOW, MAZE)
             if BOT == COIN:
                 return
+if __name__ == "__main__":
+    play()
