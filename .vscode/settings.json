@@ -1,0 +1,9 @@
+{
+    "python.analysis.typeCheckingMode": "basic",
+    "[python]": {
+        "editor.formatOnType": false,
+        "editor.defaultFormatter": "ms-python.python",
+        "editor.autoClosingQuotes": "always"
+    },
+    "prettier.printWidth": 200
+}

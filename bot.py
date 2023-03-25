@@ -124,15 +124,15 @@ def ConvertToStep(path):
             break
         # current [3, 2] vs [4, 2]
         if step[0] < path[idx+1][0]:
-            convertedPath.append("right")
+            convertedPath.append("down")
         if step[0] > path[idx+1][0]:
-            convertedPath.append("left")
+            convertedPath.append("up")
 
         # [3, 2] vs [3,3]
         if step[1] < path[idx+1][1]:
-            convertedPath.append("down")
+            convertedPath.append("right")
         if step[1] > path[idx+1][1]:
-            convertedPath.append("up")
+            convertedPath.append("left")
     return convertedPath
 
 def WriteToText(context,filename="action.txt"):
