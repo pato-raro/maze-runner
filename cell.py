@@ -4,7 +4,6 @@ class Cell:
     def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.status = "Unvisited"
         self.gridheight = dt.data['height']
         self.gridwidth = dt.data['width']
         self.g = float('inf')
