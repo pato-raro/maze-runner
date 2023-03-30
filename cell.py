@@ -1,11 +1,11 @@
 import import_data as dt
 class Cell:
-    parent = None
     def __init__(self, x, y):
         self.x = x
         self.y = y
         self.gridheight = dt.data['height']
         self.gridwidth = dt.data['width']
+        self.parent = None
         self.g = float('inf')
         self.h = float('inf')
         self.f = 0
