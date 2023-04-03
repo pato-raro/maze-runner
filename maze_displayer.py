@@ -1,47 +1,26 @@
 import pygame
-import os
-from maze_drawer import display, load_JSON_file, BOARD_SIZE
-from bot import find_path
+from helper import drawMaze, getJsonData
+from constants import WINDOW, CELL_SIZE, MAP_IMAGE, COIN_IMAGE, OBSTACLE_IMAGE, BOT_IMAGE_LIST
 
-WINDOW = pygame.display.set_mode(BOARD_SIZE)
+MAZE = getJsonData('maze_metadata.json')
+CONFIG = {
+    'size': CELL_SIZE,
+    'background': MAP_IMAGE,
+    'coinImage': COIN_IMAGE,
+    'obstacleImage': OBSTACLE_IMAGE,
+    'botImageList': BOT_IMAGE_LIST
+}
 
 
-def load_text_file(file_name):
-    file = open(file_name + '.txt', 'r')
-    data = file.readlines()
-    file.close()
-    return data
-
-
-def play():
-    os.system("python bot.py")
-    ACTION_LIST = load_text_file('action')
-    MAZE = load_JSON_file('maze_metadata')
-
+def render():
     running = True
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-        for action in ACTION_LIST:
 
-            BOT = MAZE['bot']
-            COIN = MAZE['coin']
-            action = action.strip()
-            if action == "down":
-                BOT[0] += 1
-            elif action == "up":
-                BOT[0] -= 1
-            elif action == "left":
-                BOT[1] -= 1
-            elif action == "right":
-                BOT[1] += 1
-            else:
-                continue
+        drawMaze(WINDOW, MAZE, CONFIG)
 
-            pygame.time.wait(200)
-            display(WINDOW, MAZE)
-            if BOT == COIN:
-                return
+
 if __name__ == "__main__":
-    play()
+    render()
