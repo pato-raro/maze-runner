@@ -14,6 +14,13 @@ def getImage(source, scaleRatio):
     transformImage = pygame.transform.scale(originImage, scaleRatio)
     return transformImage
 
+def getVoice(source):
+    mixer = pygame.mixer
+    mixer.init()
+    mixer.music.load(source) 
+    mixer.music.set_volume(0.5)
+    return mixer
+
 
 def drawMaze(surface, maze, config):
     size, background, coinImage, obstacleImage, botImageList = config.values()
