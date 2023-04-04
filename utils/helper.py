@@ -19,12 +19,13 @@ def drawMaze(surface, maze, config):
     size, background, coinImage, obstacleImage, botImageList = config.values()
     surface.blit(background, (0, 0))
     # surface.fill((255, 255, 255))
-    width, height, obstacles, botList, coin = maze.values()
+    width, height, obstacles, botList, coin, screen = maze.values()
+    botPositionList = list(map(lambda bot: bot["pos"], botList))
     for i in range(height):
         for j in range(width):
             location = [i, j]
-            if location in botList:
-                botIndex = botList.index(location)
+            if location in botPositionList:
+                botIndex = botPositionList.index(location)
                 surface.blit(botImageList[botIndex], (j * size, i * size))
             if location == coin:
                 surface.blit(coinImage, (j * size, i * size))
