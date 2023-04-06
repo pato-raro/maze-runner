@@ -14,26 +14,19 @@ def getImage(source, scaleRatio):
     transformImage = pygame.transform.scale(originImage, scaleRatio)
     return transformImage
 
-def getVoice(source):
-    mixer = pygame.mixer
-    mixer.init()
-    mixer.music.load(source) 
-    mixer.music.set_volume(0.5)
-    return mixer
 
-
-def drawMaze(surface, maze, config):
-    size, background, coinImage, obstacleImage, botImageList = config.values()
+def drawMaze(surface, maze, config, botList):
+    size, background, coinImage, obstacleImage = config.values()
     surface.blit(background, (0, 0))
     # surface.fill((255, 255, 255))
-    width, height, obstacles, botList, coin, screen = maze.values()
-    botPositionList = list(map(lambda bot: bot["pos"], botList))
+    width, height, obstacles, bots, coin, screen = maze.values()
+    botPositionList = list(map(lambda bot: bot.location, botList))
     for i in range(height):
         for j in range(width):
             location = [i, j]
             if location in botPositionList:
                 botIndex = botPositionList.index(location)
-                surface.blit(botImageList[botIndex], (j * size, i * size))
+                surface.blit(botList[botIndex].image, (j * size, i * size))
             if location == coin:
                 surface.blit(coinImage, (j * size, i * size))
             if location in obstacles:

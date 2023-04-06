@@ -1,8 +1,7 @@
+import asyncio
+from models.GameBoard import GameBoard
 
-from models.Maze import Maze
-			
 if __name__ == "__main__":
-    maze = Maze('maze_metadata.json')
-    maze.render()
-    
-    
+    boardGame = GameBoard()
+    boardGame.initGame()
+    asyncio.run(boardGame.start())

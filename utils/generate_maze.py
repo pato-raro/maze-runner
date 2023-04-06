@@ -21,12 +21,12 @@ def generateMaze(pathFile):
                 COIN = [rowIndex, colIndex]
             elif row[colIndex] == '*':
                 OBSTACLES.append([rowIndex, colIndex])
-            
+
     mazeDictionary = {
         "width": WIDTH,
         "height": HEIGHT,
         "obstacles": OBSTACLES,
-        "bot": BOT,
+        "bots": BOT,
         "coin": COIN
     }
     jsonMaze = json.dumps(mazeDictionary)

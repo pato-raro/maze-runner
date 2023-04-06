@@ -5,5 +5,8 @@
         "editor.defaultFormatter": "ms-python.python",
         "editor.autoClosingQuotes": "always"
     },
-    "prettier.printWidth": 200
+    "prettier.printWidth": 200,
+    "python.analysis.extraPaths": [
+        "./utils"
+    ]
 }
