@@ -4,7 +4,7 @@ class AStar:
         self.start = start
         self.coin = coin
         self.open_set = []
-        self.closed_set = []
+        self.closed_set = set()
         self.path = []
     def convert_to_step(self, path):
         convertedPath = []
@@ -31,7 +31,7 @@ class AStar:
         f.close()
     def find_shortest_path(self, grid):
         self.open_set.append(self.start)
-        self.closed_set.append(self.start)
+        self.closed_set.add(self.start)
         self.start.g = 0
         self.start.h = self.start.heuristic(self.coin)
         if self.start.coor() == self.coin.coor():
@@ -55,4 +55,4 @@ class AStar:
                     i_neighbor.f = i_neighbor.g + i_neighbor.h
                     if i_neighbor not in self.closed_set:
                         heapq.heappush(self.open_set, i_neighbor)
-                        self.closed_set.append(i_neighbor)
+                        self.closed_set.add(i_neighbor)

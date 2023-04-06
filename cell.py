@@ -15,6 +15,8 @@ class Cell:
         return self.f < other.f
     def __eq__(self, other):
         return self.coor() == other.coor()
+    def __hash__(self):
+        return hash((self.x, self.y))
     def is_blocked(self, g):
         if g[self.x][self.y] == -1:
             return True
