@@ -23,12 +23,23 @@ class GameBoard:
 
         running = True
         while running:
-            global botMoveTask
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
 
             for bot in botList:
+                if bot.status != "move":
+                    continue
+
                 if len(bot.moveSet) != 0:
-                    direction = bot.moveSet.pop(0)
-                    bot.move(direction, 0.2, self.board.render)
+                    move = bot.moveSet.pop(0)
+                    bot.move(move["direction"], float(
+                        move["time"]), self.board.render)
+
+                if bot.isOver:
+                    botIndex = botList.index(bot)
+                    botList.pop(botIndex)
+                    bot.gameOver()
+
+                if bot.name == "tadao":
+                    bot.isOver = True

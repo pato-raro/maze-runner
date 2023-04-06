@@ -35,3 +35,4 @@ grid[i][j] = 's2'
 bot_1 = bot_lst[0]['name']
 bot_2 = bot_lst[1]['name']
 shortest_path = AStar(bot_1, start1, coin).find_shortest_path(grid)
+shortest_path = AStar(bot_2, start2, coin).find_shortest_path(grid)

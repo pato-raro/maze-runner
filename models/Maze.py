@@ -14,10 +14,10 @@ class Maze:
             'obstacleImage': OBSTACLE_IMAGE,
         }
         self.window = pygame.display.set_mode(BOARD_SIZE)
-        self.botList = []
 
     def initBotList(self):
-        characterList = self.maze['bots']
+        botList = self.maze['bots']
+        self.botList = []
         imageList = ['./assets/images/goku.png',
                      './assets/images/vegeta.png']
 
@@ -26,13 +26,17 @@ class Maze:
         deathSoundList = ['./assets/voices/yamete.mp3',
                           './assets/voices/eh.mp3']
 
-        for character in characterList:
-            charIndex = characterList.index(character)
-            name, location, status, score = character.values()
-            bot = Bot(name, location, status, score)
-            bot.setImage(imageList[charIndex])
-            bot.setVoices(killSoundList[charIndex], deathSoundList[charIndex])
-            self.botList.append(bot)
+        for bot in botList:
+            botIndex = botList.index(bot)
+            name, location, status, score = bot.values()
+
+            if status == "eliminated":
+                continue
+
+            player = Bot(name, location, status, score)
+            player.setImage(imageList[botIndex])
+            player.setVoices(killSoundList[botIndex], deathSoundList[botIndex])
+            self.botList.append(player)
 
     def render(self):
         drawMaze(self.window, self.maze, self.config, self.botList)

@@ -27,13 +27,17 @@ class Character:
             return 0
 
     def playSound(self, type):
+        volume = 0.2
         if self.killVoice == None or self.deathVoice == None:
             return
 
         if type == "kill":
             pygame.mixer.Channel(0).play(self.killVoice)
+            self.killVoice.set_volume(volume)
 
         elif type == "death":
             pygame.mixer.Channel(1).play(self.deathVoice)
+            self.deathVoice.set_volume(volume)
+            
         # if type == "moveBot":
         #     self.moveVoice.music.play()

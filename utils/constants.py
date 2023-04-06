@@ -10,9 +10,3 @@ SCALE_RATIO = (CELL_SIZE, CELL_SIZE)
 MAP_IMAGE = getImage('assets/images/map.png', BOARD_SIZE)
 COIN_IMAGE = getImage('assets/images/coin.png', SCALE_RATIO)
 OBSTACLE_IMAGE = getImage('assets/images/obstacle.png', SCALE_RATIO)
-BOT_IMAGE_LIST = list(map(lambda source: getImage(source, SCALE_RATIO), [
-    'assets/images/vegeta.png',
-    'assets/images/goku.png',
-    'assets/images/conan.png',
-    'assets/images/gin.png',
-    'assets/images/kid.png']))
