@@ -1,6 +1,7 @@
-import asyncio
-from .Character import Character
 import pygame as pg
+from .Character import Character
+from time import sleep
+
 pg.init()
 
 
@@ -19,8 +20,9 @@ class Bot(Character):
         data = list(map(lambda step: step.strip(), data))
         self.moveSet = data
 
-    async def move(self, direction, time, callback):
-        await asyncio.sleep(time)
+    def move(self, direction, time, callback):
+        delay = time
+        sleep(delay)
         if direction == "up":
             self.location[0] -= 1
 

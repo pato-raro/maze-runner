@@ -1,5 +1,4 @@
 import pygame
-import asyncio
 from .Maze import Maze
 
 
@@ -19,7 +18,7 @@ class GameBoard:
 
         self.board.render()
 
-    async def start(self):
+    def start(self):
         botList = self.board.botList
 
         running = True
@@ -32,6 +31,4 @@ class GameBoard:
             for bot in botList:
                 if len(bot.moveSet) != 0:
                     direction = bot.moveSet.pop(0)
-                    botMoveTask = asyncio.create_task(
-                        bot.move(direction, 0.2, self.board.render))
-            await botMoveTask
+                    bot.move(direction, 0.2, self.board.render)
