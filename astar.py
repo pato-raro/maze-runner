@@ -1,33 +1,43 @@
 import heapq
+import timeit
+from cell import Cell
 class AStar:
-    def __init__(self, start, coin):
-        self.start = start
-        self.coin = coin
+    def __init__(self, name, start, coin):
+        self.start = Cell(start[0], start[1])
+        self.coin = Cell(coin[0], coin[1])
         self.open_set = []
         self.closed_set = set()
         self.path = []
+        self.name = name
+        self.start_time = timeit.default_timer()
     def convert_to_step(self, path):
         convertedPath = []
         for idx, step in list(enumerate(path)):
-
             if step == path[-1]:
                 break
             # current [3, 2] vs [4, 2]
             if step[0] < path[idx+1][0]:
-                convertedPath.append("down")
+                stop_time = timeit.default_timer()
+                convertedPath.append(["down", (stop_time - self.start_time)*1000])
             if step[0] > path[idx+1][0]:
-                convertedPath.append("up")
+                stop_time = timeit.default_timer()
+                convertedPath.append(["up", (stop_time - self.start_time)*1000])
             # [3, 2] vs [3,3]
             if step[1] < path[idx+1][1]:
-                convertedPath.append("right")
+                stop_time = timeit.default_timer()
+                convertedPath.append(["right", (stop_time - self.start_time)*1000])
             if step[1] > path[idx+1][1]:
-                convertedPath.append("left")
+                stop_time = timeit.default_timer()
+                convertedPath.append(["left", (stop_time - self.start_time)*1000])
         return convertedPath
     def write_to_text(self, content, filename = 'action.txt'):
-        content = "\n".join(content)
-        print(content)
+        filename = self.name +'.txt'
         f = open(filename, "w")
-        f.write(content)
+        for item in content:
+            f.write(item[0])
+            f.write(' ')
+            f.write(str(item[1]))
+            f.write('\n')
         f.close()
     def find_shortest_path(self, grid):
         self.open_set.append(self.start)
