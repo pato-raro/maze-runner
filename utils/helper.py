@@ -8,6 +8,12 @@ def getJsonData(pathFile):
     file.close()
     return data
 
+def setJsonData(pathFile, data):
+    file = open(pathFile, 'w')
+    jsonData = json.dumps(data)
+    file.write(jsonData)
+    file.close()
+
 
 def getImage(source, scaleRatio):
     originImage = pygame.image.load(source)
@@ -31,4 +37,4 @@ def drawMaze(surface, maze, config, botList):
                 surface.blit(coinImage, (j * size, i * size))
             if location in obstacles:
                 surface.blit(obstacleImage, (j * size, i * size))
-    pygame.display.update()
+    pygame.display.flip()

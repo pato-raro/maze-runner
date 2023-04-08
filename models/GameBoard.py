@@ -1,45 +1,44 @@
+import os
+import random
 import pygame
 from .Maze import Maze
+from time import sleep
+from utils.constants import WINDOW
+from utils.helper import setJsonData
 
 
 class GameBoard:
-    def __init__(self):
-        self.board = Maze('maze_metadata.json')
+    def __init__(self, filePath):
+        self.filePath = filePath
         self.actionList = ['actions/tadao.txt', 'actions/top.txt']
+        self.modifiedOn = os.path.getmtime(filePath)
 
-    def initGame(self):
+    def initGame(self, ballStar):
+        self.board = Maze(self.filePath, ballStar)
         self.board.initBotList()
-
-        botList = self.board.botList
-
-        for bot in botList:
-            index = botList.index(bot)
-            bot.setMoves(self.actionList[index])
-
-        self.board.render()
+        self.board.render(WINDOW)
 
     def start(self):
-        botList = self.board.botList
-
+        ballStar = 0
+        self.initGame(ballStar)
         running = True
         while running:
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
 
-            for bot in botList:
-                if bot.status != "move":
-                    continue
+            sleep(0.2)
+            modified = os.path.getmtime(self.filePath)
 
-                if len(bot.moveSet) != 0:
-                    move = bot.moveSet.pop(0)
-                    bot.move(move["direction"], float(
-                        move["time"]), self.board.render)
+            coinLocation = self.board.maze["coin"]
 
-                if bot.isOver:
-                    botIndex = botList.index(bot)
-                    botList.pop(botIndex)
-                    bot.gameOver()
-
-                if bot.name == "tadao":
-                    bot.isOver = True
+            if modified != self.modifiedOn:
+                self.modifiedOn = modified
+                self.initGame(ballStar)
+                print("Re-render")
+            for bot in self.board.botList:
+                if bot.location == coinLocation:
+                    self.board.randomNewCoin()
+                    setJsonData(self.filePath, self.board.maze)
+                    ballStar = random.randint(0, 6)

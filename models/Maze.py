@@ -1,19 +1,18 @@
-import pygame
+import random
 from utils.helper import drawMaze, getJsonData
-from utils.constants import CELL_SIZE, BOARD_SIZE, MAP_IMAGE, COIN_IMAGE, OBSTACLE_IMAGE
+from utils.constants import CELL_SIZE, MAP_IMAGE, COIN_IMAGE_LIST, OBSTACLE_IMAGE
 from .Bot import Bot
 
 
 class Maze:
-    def __init__(self, maze_metadata):
+    def __init__(self, maze_metadata, ballStar):
         self.maze = getJsonData(maze_metadata)
         self.config = {
             'size': CELL_SIZE,
             'background': MAP_IMAGE,
-            'coinImage': COIN_IMAGE,
+            'coinImage': COIN_IMAGE_LIST[ballStar],
             'obstacleImage': OBSTACLE_IMAGE,
         }
-        self.window = pygame.display.set_mode(BOARD_SIZE)
 
     def initBotList(self):
         botList = self.maze['bots']
@@ -38,5 +37,19 @@ class Maze:
             player.setVoices(killSoundList[botIndex], deathSoundList[botIndex])
             self.botList.append(player)
 
-    def render(self):
-        drawMaze(self.window, self.maze, self.config, self.botList)
+    def render(self, surface):
+        drawMaze(surface, self.maze, self.config, self.botList)
+
+    def randomNewCoin(self):
+        rowLimit = self.maze["height"] - 1
+        colLimit = self.maze["width"] - 1
+        obstacleList = self.maze["obstacles"]
+
+        newLocation = [random.randint(
+            0, rowLimit), random.randint(0, colLimit)]
+
+        while newLocation in obstacleList:
+            newLocation = [random.randint(
+                0, rowLimit), random.randint(0, colLimit)]
+
+        self.maze["coin"] = newLocation
