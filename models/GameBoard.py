@@ -16,14 +16,14 @@ class GameBoard:
     def initGame(self, ballStar):
         self.board = Maze(self.filePath, ballStar)
         self.board.initBotList()
-        self.board.render(WINDOW)
+
+        self.board.render(WINDOW, ballStar, {bot.name: bot.score for bot in self.board.botList})
 
     def start(self):
         ballStar = 0
         self.initGame(ballStar)
         running = True
         while running:
-
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
@@ -37,8 +37,12 @@ class GameBoard:
                 self.modifiedOn = modified
                 self.initGame(ballStar)
                 print("Re-render")
+
             for bot in self.board.botList:
                 if bot.location == coinLocation:
                     self.board.randomNewCoin()
                     setJsonData(self.filePath, self.board.maze)
                     ballStar = random.randint(0, 6)
+
+            self.board.render(WINDOW, ballStar, {bot.name: bot.score for bot in self.board.botList})
+

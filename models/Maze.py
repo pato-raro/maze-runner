@@ -1,6 +1,7 @@
+import pygame
 import random
-from utils.helper import drawMaze, getJsonData
-from utils.constants import CELL_SIZE, MAP_IMAGE, COIN_IMAGE_LIST, OBSTACLE_IMAGE
+from utils.helper import drawMaze, getJsonData, renderScore, renderTime
+from utils.constants import CELL_SIZE, MAP_IMAGE, COIN_IMAGE_LIST, OBSTACLE_IMAGE, HEADER_HEIGHT, HEADER_IMAGE
 from .Bot import Bot
 
 
@@ -8,6 +9,8 @@ class Maze:
     def __init__(self, maze_metadata, ballStar):
         self.maze = getJsonData(maze_metadata)
         self.config = {
+            'headerImage' : HEADER_IMAGE,
+            'headerHeight' : HEADER_HEIGHT,
             'size': CELL_SIZE,
             'background': MAP_IMAGE,
             'coinImage': COIN_IMAGE_LIST[ballStar],
@@ -37,8 +40,14 @@ class Maze:
             player.setVoices(killSoundList[botIndex], deathSoundList[botIndex])
             self.botList.append(player)
 
-    def render(self, surface):
-        drawMaze(surface, self.maze, self.config, self.botList)
+
+    def render(self, surface, botScores, elapsedTime):
+        drawMaze(surface, self.maze, self.config, self.botList, botScores, elapsedTime)
+        #renderTime(surface, 5, self.maze['width'], self.config['headerHeight'])
+        #renderScore(surface, 10)
+        pygame.display.flip()
+
+
 
     def randomNewCoin(self):
         rowLimit = self.maze["height"] - 1
