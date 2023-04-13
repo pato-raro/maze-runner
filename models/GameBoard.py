@@ -3,8 +3,8 @@ import random
 import pygame
 import asyncio
 from .Maze import Maze
-from utils.constants import WINDOW
-from utils.helper import setJsonData,renderTime
+from utils.constants import WINDOW , HEADER_SIZE
+from utils.helper import setJsonData
 import time
 
 
@@ -17,9 +17,17 @@ class GameBoard:
         self.board = Maze(self.filePath, ballStar)
         self.board.initBotList()
 
+    def countDown():
+        done =  False
+        secs = 0
+        mins= 0
+        font = pygame.font.SysFont('freesansbold.ttf',32)
+        text = font.render("{}:{}".format(mins,secs),True,'red','green')
+        textRect = text.get_rect()
+        text
     def start(self):
         ballStar = 0
-        timeLimit = 80       # minutes
+        timeLimit = 90       # seconds
         self.initGame(ballStar)
         self.board.render(WINDOW, {
                           bot.name: bot.score for bot in self.board.botList}, timeLimit)         
@@ -29,18 +37,21 @@ class GameBoard:
                 if event.type == pygame.QUIT:
                     running = False
             total_mins = timeLimit//60 # minutes left
-            total_sec = timeLimit-(60*(total_mins)) #seconds left
+            total_secs = timeLimit-(60*(total_mins)) #seconds left
             timeLimit -= 1
+            if total_secs == 0:
+                total_secs= 60
+                total_mins-= 1
             if timeLimit > -1:
                 font = pygame.font.SysFont('freesansbold.ttf', 25)
-                text = font.render(("elapseTime: "+str(total_mins)+":"+str(total_sec)), True, 'red')
-                WINDOW.blit(text, (400, 400))
+                text = font.render("{}:{}".format(total_mins,total_secs),True,'red','green')
+                WINDOW.blit(text, (380, 45))
                 pygame.display.flip()
                 time.sleep(1)#making the time interval of the loop 1sec
             else:
                 font = pygame.font.SysFont('freesansbold.ttf', 25)
                 text = font.render("Time Over!!", True, 'red')
-                WINDOW.blit(text, (360, 60))
+                WINDOW.blit(text, (380, 45))
                 pygame.display.flip()
             coinLocation = self.board.maze["coin"]
 

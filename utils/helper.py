@@ -24,16 +24,16 @@ def getImage(source, scaleRatio):
 
 
 def renderTime(surface, elapsedTime, headerWidth, headerHeight):
-    formatedTime = time.strftime("%M:%S", time.gmtime(elapsedTime * 60))
-    font = pygame.font.SysFont('freesansbold.ttf', 25) # khoi tao font chu
-    time_text = font.render(f'{formatedTime}', True, ('red'))
-    text_rect = time_text.get_rect(
-        center=(headerWidth // 2, headerHeight // 2))
+    # formatedTime = time.strftime("%M:%S", time.gmtime(elapsedTime * 60))
+    # font = pygame.font.SysFont('freesansbold.ttf', 25) # khoi tao font chu
+    # time_text = font.render(f'{formatedTime}', True, ('red'))
+    # text_rect = time_text.get_rect(
+    #     center=(headerWidth // 2, headerHeight // 2))
     color = (0, 0, 0)
     pygame.draw.rect(surface, color, pygame.Rect(headerWidth // 2.35 , headerHeight // 4, 120, 60),  3,  3)
 
 
-    surface.blit(time_text, text_rect)
+    # surface.blit(time_text, text_rect)
 
 def renderScore(surface, botIndex, bot):
     # botName = bot.name
