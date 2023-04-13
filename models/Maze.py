@@ -1,7 +1,7 @@
 import pygame
 import random
 from utils.helper import drawMaze, getJsonData
-from utils.constants import CELL_SIZE, MAP_IMAGE, COIN_IMAGE_LIST, OBSTACLE_IMAGE, HEADER_HEIGHT, HEADER_IMAGE
+from utils.constants import CELL_SIZE, MAP_IMAGE, COIN_IMAGE_LIST, OBSTACLE_IMAGE, HEADER_HEIGHT
 from .Bot import Bot
 
 
@@ -9,7 +9,6 @@ class Maze:
     def __init__(self, maze_metadata, ballStar):
         self.maze = getJsonData(maze_metadata)
         self.config = {
-            'headerImage': HEADER_IMAGE,
             'headerHeight': HEADER_HEIGHT,
             'size': CELL_SIZE,
             'background': MAP_IMAGE,
@@ -49,11 +48,9 @@ class Maze:
         colLimit = self.maze["width"] - 1
         obstacleList = self.maze["obstacles"]
 
-        newLocation = [random.randint(
-            0, rowLimit), random.randint(0, colLimit)]
+        newLocation = [random.randint( 0, rowLimit), random.randint(0, colLimit)]
 
         while newLocation in obstacleList:
-            newLocation = [random.randint(
-                0, rowLimit), random.randint(0, colLimit)]
+            newLocation = [random.randint(0, rowLimit), random.randint(0, colLimit)]
 
         self.maze["coin"] = newLocation

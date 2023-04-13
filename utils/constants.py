@@ -15,9 +15,6 @@ WINDOW = pygame.display.set_mode(BOARD_SIZE)
 
 MAP_IMAGE = getImage('assets/images/map.png', BOARD_SIZE)
 OBSTACLE_IMAGE = getImage('assets/images/obstacle.png', SCALE_RATIO)
-
-HEADER_IMAGE = getImage('assets/images/menuscore.png', HEADER_SIZE)
-
 COIN_IMAGE_LIST = list(map(lambda source: getImage(source, SCALE_RATIO), [
     'assets/images/one.png',
     'assets/images/two.png',
