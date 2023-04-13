@@ -36,10 +36,10 @@ def renderTime(surface, elapsedTime, headerWidth, headerHeight):
     # surface.blit(time_text, text_rect)
 
 def renderScore(surface, botIndex, bot):
-    # botName = bot.name
-    # botScore = bot.score
-    # botImage = bot.image
-    # print("name: ", botName, " score: ", botScore)
+    botName = bot.name
+    botScore = bot.score
+    botImage = bot.image
+    print("name: ", botName, " score: ", botScore)
     color = (0, 0, 0)
     y = 20
     if botIndex % 2 == 0:
@@ -55,6 +55,8 @@ def renderScore(surface, botIndex, bot):
     elif position == "right":
         pygame.draw.rect(surface, color, pygame.Rect(
             x, y, 240, 60), 3, border_bottom_left_radius=60)
+        
+
     pygame.display.flip()
 
 
