@@ -29,25 +29,28 @@ def renderTime(surface, elapsedTime, headerWidth, headerHeight):
     # time_text = font.render(f'{formatedTime}', True, ('red'))
     # text_rect = time_text.get_rect(
     #     center=(headerWidth // 2, headerHeight // 2))
+    # # surface.blit(time_text, text_rect)
     color = (0, 0, 0)
-    pygame.draw.rect(surface, color, pygame.Rect(headerWidth // 2.35 , headerHeight // 4, 120, 60),  3,  3)
+    pygame.draw.rect(surface, color, pygame.Rect(headerWidth // 2.35, (headerHeight//2) - 60 // 2 , 120, 60),  3,  3)
 
-
-    # surface.blit(time_text, text_rect)
 
 def renderScore(surface, botIndex, bot):
     botName = bot.name
     botScore = bot.score
     botImage = bot.image
-    print("name: ", botName, " score: ", botScore)
+    
     color = (0, 0, 0)
     y = 20
     if botIndex % 2 == 0:
         position = "left"
         x = 10
+        botX = x
+        textX = x + 40 
     else:
         position = "right"
         x = 550
+        botX = x + 240 - 40
+        textX = botX -40 -20
     if position == "left":
         pygame.draw.rect(surface, color, pygame.Rect(
             x, y, 240, 60), 3, border_bottom_right_radius=60)
@@ -55,10 +58,18 @@ def renderScore(surface, botIndex, bot):
     elif position == "right":
         pygame.draw.rect(surface, color, pygame.Rect(
             x, y, 240, 60), 3, border_bottom_left_radius=60)
-        
+        botImage = pygame.transform.flip(botImage, True, False) # đối xứng ảnh
+    surface.blit(botImage, (botX, y+10))
+    renderText(surface,"Score:" + str(botScore),textX,y + 30 )
+    renderText(surface,"Name:" + str(botName),textX-10,y+10)
+
 
     pygame.display.flip()
-
+def renderText(surface, text,textX,textY):
+    font =  pygame.font.SysFont('freesansbold.ttf', 25)
+    text = font.render(text , True , 'black ')
+    surface.blit(text,(textX,textY))
+  
 
 def drawMaze(surface, maze, config, botList, botScores=None, elapsedTime=None):
     headerHeight, size, background, coinImage, obstacleImage = config.values()
@@ -78,5 +89,6 @@ def drawMaze(surface, maze, config, botList, botScores=None, elapsedTime=None):
             if location == coin:
                 surface.blit(coinImage, (j * size, i * size + headerHeight))
             if location in obstacles:
-                surface.blit(obstacleImage, (j * size, i * size + headerHeight))
+                surface.blit(obstacleImage, (j * size,
+                             i * size + headerHeight))
     pygame.display.flip()
