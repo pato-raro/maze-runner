@@ -42,15 +42,3 @@ class Maze:
                  self.botList, botScores, elapsedTime)
         self.maze["screen"] = True
         pygame.display.flip()
-
-    def randomNewCoin(self):
-        rowLimit = self.maze["height"] - 1
-        colLimit = self.maze["width"] - 1
-        obstacleList = self.maze["obstacles"]
-
-        newLocation = [random.randint( 0, rowLimit), random.randint(0, colLimit)]
-
-        while newLocation in obstacleList:
-            newLocation = [random.randint(0, rowLimit), random.randint(0, colLimit)]
-
-        self.maze["coin"] = newLocation

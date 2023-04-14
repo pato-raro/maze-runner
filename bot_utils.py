@@ -1,27 +1,27 @@
+import argparse
 import json
+import time
+def run_cli():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-i', type=str, help="Input file name")
+    parser.add_argument('-o', type=str, help="Output file name")
+    args = parser.parse_args()
+    return str(args.i), str(args.o)
+input_file, output_file = run_cli()
+def get_bot_index(data,bot_name):
+    bot_lst = data['bots']
+    index = 0
+    for item in bot_lst:
+        if item['name'] == bot_name:
+            return index
+        index += 1
+def import_dt(filename):
+    try:
+        with open(filename, 'r') as file:
+            data = json.loads(file.read())
+            return data
+    except json.decoder.JSONDecodeError:
+        time.sleep(0.01)
+        return import_dt(filename)
 
-def import_data(location = "maze_metadata.json"):
-    f = open(location)
-    with open(location, 'r') as file:
-        data = json.load(file)
-    return data
 
-def write_to_text(context, one_line = True, filename = "action.txt"):
-    if one_line:
-        f = open(filename, 'a')
-        f.write(str(context))
-        f.write("\n")
-    else:
-        f = open(filename, 'w')
-        f.write(context)
-    f.close()
-    
-def convert_list_to_string(context):
-    return " ".join(list(map(str,context)))
-
-def change_status_json(status, filename = "maze_metadata.json"):
-    with open(filename, "r") as jsonFile:
-        data = json.load(jsonFile)
-    data["bots"][0]["status"] = status
-    with open(filename, "w") as jsonFile:
-        json.dump(data, jsonFile)

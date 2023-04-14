@@ -19,7 +19,7 @@ class GameBoard:
 
     def start(self):
         ballStar = 0
-        timeLimit = 10       # seconds
+        timeLimit = 300       # seconds
         self.initGame(ballStar)
         self.board.render(WINDOW, {
                           bot.name: bot.score for bot in self.board.botList}, timeLimit)         
@@ -54,5 +54,4 @@ class GameBoard:
             for bot in self.board.botList:
                 if bot.location == coinLocation:
                     ballStar = random.randint(0, 6)
-                    self.board.randomNewCoin()
                     setJsonData(self.filePath, self.board.maze)
