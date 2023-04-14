@@ -33,14 +33,14 @@ class GameBoard:
             timeLimit -= 1
             if timeLimit > -1:
                 font = pygame.font.SysFont('freesansbold.ttf', 25)
-                text=font.render((f"{total_mins:02}:{total_secs:02}"), True, 'red','green')
+                text=font.render((f"{total_mins:02}:{total_secs:02}"), True, 'black', 'white')
                 # text = font.render("{}:{}".format(total_mins,total_secs),True,'red','green')
                 WINDOW.blit(text, (380, 42))
                 pygame.display.flip()
                 time.sleep(1)#making the time interval of the loop 1sec
             else:
                 font = pygame.font.SysFont('freesansbold.ttf', 25)
-                text = font.render("Time Over!!", True, 'red','green')
+                text = font.render("Time Over!!",True, 'red', 'white')
                 WINDOW.blit(text, (355, 42))
                 pygame.display.flip()
             coinLocation = self.board.maze["coin"]

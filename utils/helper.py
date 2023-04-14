@@ -30,8 +30,8 @@ def renderTime(surface, elapsedTime, headerWidth, headerHeight):
     # text_rect = time_text.get_rect(
     #     center=(headerWidth // 2, headerHeight // 2))
     # # surface.blit(time_text, text_rect)
-    color = (0, 0, 0)
-    pygame.draw.rect(surface, color, pygame.Rect(headerWidth // 2.35, (headerHeight//2) - 60 // 2 , 120, 60),  3,  3)
+    color = (255, 255, 255) 
+    pygame.draw.rect(surface, color, pygame.Rect(headerWidth // 2.35, (headerHeight//2) - 60 // 2 , 120, 60),  0,  3)
 
 
 def renderScore(surface, botIndex, bot):
@@ -39,7 +39,7 @@ def renderScore(surface, botIndex, bot):
     botScore = bot.score
     botImage = bot.image
     
-    color = (0, 0, 0)
+    color = (255, 255, 255) 
     y = 20
     if botIndex % 2 == 0:
         position = "left"
@@ -50,30 +50,30 @@ def renderScore(surface, botIndex, bot):
         position = "right"
         x = 550
         botX = x + 240 - 40
-        textX = botX -40 -20
+        textX = botX - 40 - 20
     if position == "left":
         pygame.draw.rect(surface, color, pygame.Rect(
-            x, y, 240, 60), 3, border_bottom_right_radius=60)
+            x, y, 240, 60), 0, border_bottom_right_radius=60)
 
     elif position == "right":
         pygame.draw.rect(surface, color, pygame.Rect(
-            x, y, 240, 60), 3, border_bottom_left_radius=60)
+            x, y, 240, 60), 0, border_bottom_left_radius=60)
         botImage = pygame.transform.flip(botImage, True, False) # đối xứng ảnh
-    surface.blit(botImage, (botX, y+10))
-    renderText(surface,"Score:" + str(botScore),textX,y + 30 )
-    renderText(surface,"Name:" + str(botName),textX-10,y+10)
+    surface.blit(botImage, (botX, y + 10))
+    renderText(surface,"Score:" + str(botScore), textX, y + 30 )
+    renderText(surface,"Name:" + str(botName), textX - 10, y + 10)
 
 
     pygame.display.flip()
 def renderText(surface, text,textX,textY):
     font =  pygame.font.SysFont('freesansbold.ttf', 25)
-    text = font.render(text , True , 'black ')
+    text = font.render(text , True , 'black')
     surface.blit(text,(textX,textY))
   
 
 def drawMaze(surface, maze, config, botList, botScores=None, elapsedTime=None):
     headerHeight, size, background, coinImage, obstacleImage = config.values()
-    surface.fill('green')
+    surface.fill((194,134,74))
     surface.blit(background, (0, 0 + headerHeight))
     renderTime(surface, elapsedTime, size * maze['width'], headerHeight)
     width, height, obstacles, bots, coin, screen = maze.values()

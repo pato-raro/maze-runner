@@ -13,8 +13,8 @@ SCALE_RATIO = (CELL_SIZE, CELL_SIZE)
 WINDOW = pygame.display.set_mode(BOARD_SIZE)
 
 
-MAP_IMAGE = getImage('assets/images/map.png', BOARD_SIZE)
-OBSTACLE_IMAGE = getImage('assets/images/obstacle.png', SCALE_RATIO)
+MAP_IMAGE = getImage('assets/images/map1.png', BOARD_SIZE)
+OBSTACLE_IMAGE = getImage('assets/images/wood.png', SCALE_RATIO)
 COIN_IMAGE_LIST = list(map(lambda source: getImage(source, SCALE_RATIO), [
     'assets/images/one.png',
     'assets/images/two.png',
