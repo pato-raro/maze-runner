@@ -24,7 +24,7 @@ class Maze:
 
         killSoundList = ['./assets/sounds/kill.mp3',
                          './assets/sounds/muda.mp3']
-        deathSoundList = ['./assets/sounds/yamete.mp3',
+        deathSoundList = ['./assets/sounds/deathingame.wav',
                           './assets/sounds/eh.mp3']
 
         for bot in botList:
