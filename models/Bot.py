@@ -13,7 +13,6 @@ class Bot(Character):
         self.status = status
         self.score = score
         self.moveSet = []
-        self.isOver = False
 
     def setMoves(self, dataset):
         file = open(dataset, 'r')
@@ -23,10 +22,7 @@ class Bot(Character):
         self.moveSet = data
 
     def gameOver(self):
-        if not self.isOver:
-            return
-            
-        self.playSound("death")
+        # self.playSound("death")
         audioDuration = self.deathVoice.get_length() if self.deathVoice != None else 0
 
         sleep(audioDuration)

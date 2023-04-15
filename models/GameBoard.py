@@ -24,7 +24,7 @@ class GameBoard:
     def start(self):
         self.background_sound.set_volume(0.3)
         ballStar = 0
-        pygame.mixer.Channel(2).play(self.background_sound, -1)
+        # pygame.mixer.Channel(2).play(self.background_sound, -1)
 
         self.initGame(ballStar)
         self.board.render(WINDOW, self.timeLeft)
@@ -54,6 +54,7 @@ class GameBoard:
                         ballStar = random.randint(0, 6)
                         setJsonData(self.filePath, self.board.maze)
                     if bot.status == "eliminated":
+                        bot.gameOver()
                         self.isGameOver = True
                         break
             else:
@@ -106,10 +107,10 @@ class GameBoard:
 
             if highest_score_bot == 1:
                 renderText(WINDOW, f"{winner} wins!", s.centerx,
-                        s.centery - 20, 32, center=True)
+                           s.centery - 20, 32, center=True)
             elif highest_score_bot == 2:
                 renderText(WINDOW, "It's a draw!", s.centerx,
-                        s.centery - 20, 32, center=True)
+                           s.centery - 20, 32, center=True)
             renderText(WINDOW, "Press 'Enter' to restart game!",
                        s.centerx, s.centery + 20, 24, center=True)
             pygame.display.update()

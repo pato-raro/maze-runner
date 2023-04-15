@@ -6,11 +6,15 @@ import pygame
 class Character:
     def __init__(self):
         self.image = None
+        self.eliminated = None
         self.killVoice = None
         self.deathVoice = None
 
     def setImage(self, image):
         self.image = getImage(image, SCALE_RATIO)  # set image
+
+    def setEliminatedImage(self, image):
+        self.eliminated = getImage(image, SCALE_RATIO)  # set image
 
     def setVoices(self, killVoice, deathVoice):  # set voice cho game
         self.killVoice = pygame.mixer.Sound(killVoice)

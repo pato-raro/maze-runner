@@ -96,7 +96,10 @@ def drawMaze(surface, maze, config, botList, elapsedTime=None):
                 renderScore(surface, botIndex, botList[botIndex])
                 if botList[botIndex].status != "eliminated":
                     surface.blit(botList[botIndex].image,
-                                 (j * size, i * size + headerHeight))
+                                    (j * size, i * size + headerHeight))
+                else:
+                    surface.blit(botList[botIndex].eliminated,
+                                    (j * size, i * size + headerHeight))
             if location == coin:
                 surface.blit(coinImage, (j * size, i * size + headerHeight))
             if location in obstacles:

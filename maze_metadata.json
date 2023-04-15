@@ -82,9 +82,9 @@
         [14, 4]
     ],
     "bots": [
-        { "name": "tadao", "pos": [9, 3], "status": "move", "score": 0 },
-        { "name": "top", "pos": [10, 3], "status": "move", "score": 0 }
+        { "name": "tadao", "pos": [4, 15], "status": "stop", "score": 0 },
+        { "name": "top", "pos": [9, 15], "status": "stop", "score": 0 }
     ],
-    "coin": [11, 3],
-    "screen": true
+    "coin": [14, 18],
+    "screen": false
 }

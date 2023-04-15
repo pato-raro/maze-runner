@@ -32,6 +32,8 @@ class Maze:
             name, location, status, score = bot.values()
 
             player = Bot(name, location, status, score)
+            if status == "eliminated":
+                player.setEliminatedImage('./assets/images/death.gif')
             player.setImage(imageList[botIndex])
             player.setVoices(killSoundList[botIndex], deathSoundList[botIndex])
             self.botList.append(player)
