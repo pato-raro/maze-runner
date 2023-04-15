@@ -22,22 +22,6 @@ class Bot(Character):
             " ")[0], "time": step.strip().split(" ")[1]}, data))
         self.moveSet = data
 
-    def move(self, direction, time, callback):
-        delay = time / 10
-        sleep(delay)
-        if direction == "up":
-            self.location[0] -= 1
-
-        elif direction == "down":
-            self.location[0] += 1
-
-        elif direction == "left":
-            self.location[1] -= 1
-
-        elif direction == "right":
-            self.location[1] += 1
-        callback()
-
     def gameOver(self):
         if not self.isOver:
             return
