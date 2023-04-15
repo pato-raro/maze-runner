@@ -11,7 +11,7 @@ class GameBoard:
     def __init__(self, filePath):  # khởi tạo đối tượng gameboard
         self.filePath = filePath
         self.background_sound = pygame.mixer.Sound(
-            './assets/sounds/background.mp3')
+            './assets/sounds/Pixelland.wav')
         self.timeLeft = TIME_LIMIT  # seconds
         self.isGameOver = False
         self.last_count = pygame.time.get_ticks()
@@ -53,9 +53,16 @@ class GameBoard:
                     if bot.location == coinLocation:
                         ballStar = random.randint(0, 6)
                         setJsonData(self.filePath, self.board.maze)
+                    if bot.name == "tadao":
+                        bot.status = " eliminated"
+
                     if bot.status == "eliminated":
                         self.isGameOver = True
+                        bot.setImage("./assets/images/death.gif")
+                        time.sleep(2)
                         break
+
+                
             else:
                 highest_score_bot = 0
                 for bot in self.board.botList:
@@ -100,6 +107,7 @@ class GameBoard:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN:
                         return self.reset_game()
+                
             s = pygame.Rect(0, 0, 300, 150)
             s.center = tuple(x // 2 for x in BOARD_SIZE)
             pygame.draw.rect(WINDOW, pygame.Color("#ffffff80"), s)
