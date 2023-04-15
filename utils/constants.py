@@ -11,6 +11,9 @@ BOARD_SIZE = (WIDTH * CELL_SIZE, HEIGHT * CELL_SIZE + HEADER_HEIGHT)
 SCALE_RATIO = (CELL_SIZE, CELL_SIZE)
 
 WINDOW = pygame.display.set_mode(BOARD_SIZE)
+CLOCK = pygame.time.Clock()
+FPS = 60
+TIME_LIMIT = 300
 
 
 MAP_IMAGE = getImage('assets/images/map1.png', BOARD_SIZE)

@@ -57,7 +57,6 @@
         [10, 1],
         [10, 2],
         [10, 6],
-        [10, 9],
         [10, 11],
         [10, 12],
         [10, 13],
@@ -83,9 +82,9 @@
         [14, 4]
     ],
     "bots": [
-        { "name": "tadao", "pos": [5, 7], "status": "move", "score": 14 },
-        { "name": "top", "pos": [5, 7], "status": "stop", "score": 11 }
+        { "name": "tadao", "pos": [9, 3], "status": "move", "score": 0 },
+        { "name": "top", "pos": [10, 3], "status": "move", "score": 0 }
     ],
-    "coin": [8, 4],
-    "screen": false
+    "coin": [11, 3],
+    "screen": true
 }

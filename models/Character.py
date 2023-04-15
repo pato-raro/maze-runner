@@ -39,5 +39,3 @@ class Character:
             pygame.mixer.Channel(1).play(self.deathVoice)
             self.deathVoice.set_volume(volume)
             
-        # if type == "moveBot":
-        #     self.moveVoice.music.play()

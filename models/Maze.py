@@ -22,23 +22,22 @@ class Maze:
         imageList = ['./assets/images/goku.png',
                      './assets/images/vegeta.png']
 
-        killSoundList = ['./assets/voices/kill.mp3',
-                         './assets/voices/muda.mp3']
-        deathSoundList = ['./assets/voices/yamete.mp3',
-                          './assets/voices/eh.mp3']
+        killSoundList = ['./assets/sounds/kill.mp3',
+                         './assets/sounds/muda.mp3']
+        deathSoundList = ['./assets/sounds/yamete.mp3',
+                          './assets/sounds/eh.mp3']
 
         for bot in botList:
             botIndex = botList.index(bot)
             name, location, status, score = bot.values()
 
-            if status != "eliminated":
-                player = Bot(name, location, status, score)
-                player.setImage(imageList[botIndex])
-                player.setVoices(killSoundList[botIndex], deathSoundList[botIndex])
-                self.botList.append(player)
+            player = Bot(name, location, status, score)
+            player.setImage(imageList[botIndex])
+            player.setVoices(killSoundList[botIndex], deathSoundList[botIndex])
+            self.botList.append(player)
 
-    def render(self, surface, botScores, elapsedTime):
+    def render(self, surface, elapsedTime):
         drawMaze(surface, self.maze, self.config,
-                 self.botList, botScores, elapsedTime)
+                 self.botList, elapsedTime)
         self.maze["screen"] = True
-        pygame.display.flip()
+        pygame.display.update()

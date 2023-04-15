@@ -1,2 +1,11 @@
 .vscode
 __pycache__
+bot.py
+bot_utils.py
+tadao.py
+top.py
+tadao.txt
+top.txt
+astar.py
+map.py
+maze_updater.py
