@@ -1,139 +1,185 @@
 import json
 import random
-from typing import List
 import os
+import time
 import argparse
-from maze_displayer import play
-
-
-class Location:
-    x = None
-    y = None
-
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
-
-    def toList(self):
-        return [self.x, self.y]
-
-    def __eq__(self, other):
-        if self.x == other.x and self.y == other.y:
-            return True
-        else:
-            return True
 
 
 class Map:
-    def __init__(self, fileTXT, fileJSON):
-        self.pathInput = fileTXT
+    def __init__(self, fileTxt1, fileTxt2, fileJSON):
+        self.pathInputBot1 = fileTxt1
+        self.pathInputBot2 = fileTxt2
+        self.input=[]
+        nameBot1 = fileTxt1.replace(".txt", "")
+        nameBot2 = fileTxt2.replace(".txt", "")
         self.pathOutput = fileJSON
-        self.loadJson()
-        self.inputDirection = self.getInput()
-    pathInput = None
-    pathOutput = None
-    width = None
-    height = None
-    obstacles: List[Location] = None
-    bot: Location = None
-    coin: Location = None
-    locations = None
-    map = None
-    inputDirection = None
+        try:
+            self.loadJson()
+        except json.decoder.JSONDecodeError:
+            time.sleep(0.5)
+            self.loadJson()
+        check1 = self.getInput(self.pathInputBot1)
+        check2 = self.getInput(self.pathInputBot2)
+        if (check1!=[] and check2!=[]): 
+            inputDirectionBot1 = check1[-1].strip().split(" ")
+            inputDirectionBot2 = check2[-1].strip().split(" ")
+            inputDirectionBot1.append(nameBot1)
+            inputDirectionBot2.append(nameBot2)
+            self.input = [inputDirectionBot1, inputDirectionBot2]
+        else:
+            time.sleep(0.5)
+        
 
-    def getInput(self):
-        filepath = os.path.join(os.getcwd(), self.pathInput)
+    def update_metadata(self):
+        orderUpdate = sorted(self.input, key=lambda x : float(x[1]))
+        time.sleep(float(orderUpdate[0][1])/1000)
+        self.updateBot(orderUpdate[0][2], orderUpdate[0][0])
+        print(self.allBotLocation(orderUpdate[0][2]))
+        self.scoreBot()
+        if self.checkEatCoin():
+            self.random_coin_location()
+        if self.botLocation(orderUpdate[0][2]) in self.allBotLocation(orderUpdate[0][2]):
+            self.setBotEliminated(orderUpdate[0][2])
+        
+
+
+        time.sleep((float(orderUpdate[1][1])-float(orderUpdate[0][1]))/ 1000)
+        self.updateBot(orderUpdate[1][2], orderUpdate[1][0])
+        self.scoreBot()
+        if self.checkEatCoin():
+            self.random_coin_location()
+        print(self.allBotLocation(orderUpdate[1][2]))
+        if self.botLocation(orderUpdate[1][2]) in self.allBotLocation(orderUpdate[1][2]):
+            self.setBotEliminated(orderUpdate[1][2])
+        
+        self.setAllBotMove()
+        self.switchScreenToFalse()
+
+
+    def updateBot(self, name, direction):
+        for index in range(len(self.bots)):
+            print(len(self.bots))
+            print(self.bots)
+            print(self.bots[index]['status'])
+            if self.bots[index]['name'] == name and self.bots[index]['status']!='eliminated':
+                if direction == 'up':
+                    self.bots[index]['pos'] = [self.bots[index]['pos'][0] - 1, self.bots[index]['pos'][1]]
+                    if self.bots[index]['pos'] in self.obstacles:
+                        self.bots[index]['pos'] = [self.bots[index]['pos'][0] + 1, self.bots[index]['pos'][1]]
+                if direction == 'down':
+                    self.bots[index]['pos'] = [self.bots[index]['pos'][0] + 1, self.bots[index]['pos'][1]]
+                    if self.bots[index]['pos'] in self.obstacles:
+                        self.bots[index]['pos'] = [self.bots[index]['pos'][0] - 1, self.bots[index]['pos'][1]]
+                if direction == 'left':
+                    self.bots[index]['pos'] = [self.bots[index]['pos'][0], self.bots[index]['pos'][1]-1]
+                    if self.bots[index]['pos'] in self.obstacles:
+                        self.bots[index]['pos'] = [self.bots[index]['pos'][0], self.bots[index]['pos'][1]+1]
+                if direction == 'right':
+                    self.bots[index]['pos'] = [self.bots[index]['pos'][0], self.bots[index]['pos'][1]+1 ]
+                    if self.bots[index]['pos'] in self.obstacles:
+                        self.bots[index]['pos'] = [self.bots[index]['pos'][0], self.bots[index]['pos'][1]-1]
+    def allBotLocation(self, without):
+        return [bot['pos'] if bot['name']!=without else "" for bot in self.bots]
+    def botLocation(self, name):
+        for bot in self.bots:
+            if bot['name'] == name:
+                return bot['pos']
+    def getInput(self, filepath):
         with open(filepath, 'r') as f:
             dataInput = f.readlines()
         dataInput = [line.replace("\n", "") for line in dataInput]
         return dataInput
-
+    def checkEatCoin(self):
+        for bot in self.bots:
+            if bot['pos'] == self.coin:
+                self.random_coin_location()
+    def random_coin_location(self):
+        coin_position = [random.randint(
+            0, self.height - 1), random.randint(0, self.width - 1)]
+        while coin_position in self.bots or coin_position in self.obstacles:
+            coin_position = [random.randint(
+                0, self.height - 1), random.randint(0, self.width - 1)]
+        self.coin = [coin_position[0], coin_position[1]]
     def loadJson(self):
+        data = None
         path = os.path.join(os.getcwd(), self.pathOutput)
-        with open(path, 'r') as file:
-            data = json.load(file)
+        with open(path, 'r', encoding='utf-8') as file:
+            data = json.loads(file.read())
             self.width = data['width']
             self.height = data['height']
             self.obstacles = data['obstacles']
-            self.obstacles = [Location(obstacle[0], obstacle[1])
-                              for obstacle in self.obstacles]
-            self.bot = Location(data['bot'][0], data['bot'][1])
-            self.coin = Location(data['coin'][0], data['coin'][1])
-            # self.obstacles = Location.sort(self.obstacles)
-
+            self.bots = data['bots']
+            self.coin = data['coin']
+            self.screen = data['screen']
     def getMapJSONAsDict(self):
         return {
             'width': self.width,
             'height': self.height,
-            'obstacles': [obstacle.toList() for obstacle in self.obstacles],
-            'bot': self.bot.toList(),
-            'coin': self.coin.toList()
+            'obstacles': self.obstacles,
+            'bots': self.bots,
+            'coin': self.coin,
+            'screen': self.screen
         }
-
-    def random_coin_location(self):
-        coin_position = [random.randint(
-                0, self.height - 1), random.randint(0, self.width - 1)]
-            
-        # Kiểm tra vị trí của đồng xu không trùng với vị trí của bot
-        # Kiểm tra vị trí của đồng xu không trùng với vị trí của vật cản
-        
-        while coin_position == self.bot.toList() or coin_position in [obstacle.toList() for obstacle in self.obstacles]:
-            # Chọn vị trí ngẫu nhiên của đồng xu
-            coin_position = [random.randint(
-                0, self.height - 1), random.randint(0, self.width - 1)]
-
-        # Trả về vị trí hợp lệ của đồng xu
-        self.coin = Location(coin_position[0], coin_position[1])
-
     def writeMapAsJSON(self, path, data=''):
         if (data == ''):
             data = {
                 'width': self.width,
                 'height': self.height,
-                'obstacles': [obstacle.toList() for obstacle in self.obstacles],
-                'bot': self.bot.toList(),
-                'coin': self.coin.toList()
+                'obstacles': self.obstacles,
+                'bots': self.bots,
+                'coin': self.coin,
+                'screen': self.screen
             }
         with open(path, 'w') as file:
             json.dump(data, file)
+    def scoreBot(self):
+        for bot in self.bots:
+            if bot['pos'] == self.coin:
+                bot['score'] +=1
+    def setAllBotStop(self):
+        for bot in self.bots:
+            bot['status'] = "stop" if bot['status'] != "eliminated" else "eliminated"
+    def setAllBotMove(self):
+        for bot in self.bots:
+            bot['status'] = "move" if bot['status'] != "eliminated" else "eliminated"
+    def setBotEliminated(self, botName):
+        for index in range(len(self.bots)):
+            if self.bots[index]['name'] == botName:
+                self.bots[index]['status'] = "eliminated"
 
+    def switchScreenToFalse(self):
+        self.screen = False
+    def readScreen(self):
+        return self.screen
+    def check_all_bots_stopped(self):
+            for bot in self.bots:
+                if bot['status'] != 'stop':
+                    return False
+            return True
     def printMapJSONAsDict(self):
         print(self.getMapJSONAsDict())
-
-
-def updatePos(map):
-    if map.bot == map.coin:
-        map.bot.x = map.coin.x
-        map.bot.y = map.coin.y
-    return map
-
-
 def getPathInp_Out():
     parser = argparse.ArgumentParser(description='Process some integers.')
-    parser.add_argument('-i', type=str,
-                        help='an integer for the accumulator')
-    parser.add_argument('-o', type=str,
-                        help='sum the integers (default: find the max)')
+    parser.add_argument('-i', type=str, action="append", nargs='+')
+    parser.add_argument('-o', type=str)
     args = parser.parse_args()
     if args.i == None or args.o == None:
         print('Please provide the path input, output as following format: python app.py -i "input.txt" -o "output.txt"')
         raise
-    return {'input': str(args.i), 'output': str(args.o)}
+    return {'input': [item[0] for item in args.i], 'output': str(args.o)}
 
 
 def update():
-    play()
     path = getPathInp_Out()
-    myMap = Map(path['input'], path['output'])
-    renderMap = []
-    updatePos(myMap)
-    renderMap.append(myMap.getMapJSONAsDict())
-    myMap.printMapJSONAsDict()
-    myMap.writeMapAsJSON('maze_render.json', renderMap)
-    myMap.random_coin_location()
-    myMap.writeMapAsJSON('maze_metadata.json')
-    update()
-
-
+    while True:
+        myMap = None
+        myMap = Map(path['input'][0], path['input'][1], path['output'])
+        # print(myMap.readScreen())
+        if myMap.readScreen() == True and myMap.check_all_bots_stopped()==True:
+            myMap.printMapJSONAsDict()
+            myMap.update_metadata()
+            myMap.writeMapAsJSON('maze_metadata.json')
+        else: 
+            continue
 if __name__ == "__main__":
     update()

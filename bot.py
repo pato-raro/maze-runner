@@ -1,184 +1,123 @@
+import json
+import timeit
 import time
-import import_data as dt
-
-
-class Cell:
-    parent = None
-
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
-        self.status = "Unvisited"
-
-    def coor(self):
-        return [self.x, self.y]
-    '''def get_x(self):
-        return self.x
-    def get_y(self):
-        return self.y'''
-
-    def is_blocked(self, g):
-        if g[self.x][self.y] == -1:
+from astar import *
+from bot_utils import *
+from map import Map
+class Bot:
+    def __init__(self, name, pos, end, status, score, grid):
+        self.pos = Cell(pos[0], pos[1])
+        self.end = Cell(end[0], end[1])
+        self.name = name
+        self.status = status
+        self.score = score
+        self.path = None
+        self.start_time = time.time()
+        self.stop_time = None
+        self.grid = grid
+    def move(self, start, dest):
+            #convert_to_direction
+        dir = self.convert_to_step(start, dest)
+            #write direction to txt file
+            #update status
+            #check other bot
+        self.write_to_text(dir, output_file, (self.stop_time - self.start_time) * 1000)
+            #get new end value if other bot too close to old end
+            #(new end will be taken later)
+    def check_other(self, bot):
+        ## if input_1 > input_2 update new dest for self
+        self.pos.update_neighbors(self.grid.map)
+        if bot.pos in self.pos.neighbors:
+            self.grid.obstacles.append(bot.pos.coor())
+            temp = self.grid.obstacles
+            self.grid.update_map(temp)
+        if self.go_middle_check(self.find_path(), bot.find_path(), 0.3):
+            self.end = self.get_new_end()
+        
+        ## if input_1 < input_2 update new dest for bot
+        ## update astar coin into bot.dest
+    def go_middle_check(self, path_1, path_2, percentage):
+        if path_1 is None or path_2 is None:
+            return True
+        if (len(path_1) - len(path_2))/len(path_1) > percentage:
             return True
         return False
+    def dodge_other(self, other):
+        neighbors = self.get_all_neighbor(self.pos.coor())
+        if other.pos.coor() in neighbors and other.pos.coor() not in self.grid.obstacles:
+            self.grid.obstacles.append(other.pos.coor())
 
-    def is_valid(self, gridheight, gridwidth):
-        if self.x < 0 or self.x >= gridheight or self.y < 0 or self.y >= gridwidth:
-            return False
-        return True
-
-    def check_goal(self, goal):
-        if self.x == goal.x and self.y == goal.y:
-            return True
-        return False
-
-    def update_neighbors(self, grid):
-        self.neighbors = []
-        cur = Cell(self.x, self.y)
-        if cur.is_valid(dt.data['height'], dt.data['width']):
-            neighbor = Cell(cur.x + 1, cur.y)
-            # right
-            if neighbor.is_valid(dt.data['height'], dt.data['width']) and not neighbor.is_blocked(grid):
-                self.neighbors.append(neighbor.coor())
-            neighbor = Cell(cur.x - 1, cur.y)
-            if neighbor.is_valid(dt.data['height'], dt.data['width']) and not neighbor.is_blocked(grid):  # left
-                self.neighbors.append(neighbor.coor())
-            neighbor = Cell(cur.x, cur.y + 1)
-            if neighbor.is_valid(dt.data['height'], dt.data['width']) and not neighbor.is_blocked(grid):  # down
-                self.neighbors.append(neighbor.coor())
-            neighbor = Cell(cur.x, cur.y - 1)
-            if neighbor.is_valid(dt.data['height'], dt.data['width']) and not neighbor.is_blocked(grid):  # up
-                self.neighbors.append(neighbor.coor())
-
-
-obstacle_lst = dt.data['obstacles']
-raw_start = dt.data['bot']
-raw_coin = dt.data['coin']
-coin = Cell(raw_coin[0], raw_coin[1])
-start = Cell(raw_start[0], raw_start[1])
-grid_height = dt.data['height']
-grid_width = dt.data['width']
-queue = []  # store unvisited cells
-visited = []  # store visited cells
-# path = []
-# initialize grid
-grid = []
-for row in range(grid_height):
-    a = []
-    for col in range(grid_width):
-        a.append(0)
-    grid.append(a)
-# initialize obstacle in the grid
-for item in obstacle_lst:
-    i = item[0]
-    j = item[1]
-    grid[i][j] = -1
-# initialize coin in the grid
-i = coin.x
-j = coin.y
-grid[i][j] = 'x'
-# initialize bot in the grid
-i = start.x
-j = start.y
-grid[i][j] = 's'
-
-
-def InsertPath(pos, queue, visited, path):
-    for i_neighbor in pos.neighbors:
-        neighbor = Cell(i_neighbor[0], i_neighbor[1])
-        # print(neighbor.coor())
-        neighbor.parent = pos
-        # print(neighbor.parent.coor())
-        if neighbor.parent.coor() not in path:
-            path.append(neighbor.parent.coor())
-        if neighbor.coor() not in queue and neighbor.coor() not in visited:
-            if not neighbor.check_goal(coin):
-                queue.append([neighbor.x, neighbor.y])
-                visited.append([neighbor.x, neighbor.y])
-            else:
-                if neighbor.parent.coor() not in path:
-                    path.append([neighbor.parent.x, neighbor.parent.y])
-                return 1
-
-
-def CreatePath(grid, start, coin, queue, visited, path):
-    queue.append([start.x, start.y])
-    visited.append([start.x, start.y])
-    start.parent = None
-    if start.coor() == coin.coor():
-        return start.coor()
-    else:
-        while len(queue) > 0:
-            pos = [queue.pop(0)]
-            temp = Cell(pos[0][0], pos[0][1])
-            temp.update_neighbors(grid)
-            if InsertPath(temp, queue, visited, path):
-                path.append([coin.x, coin.y])
-                return path
-
-
-def checkLength(path, spath, pivot):
-    for item in reversed(path):
-        length = abs(pivot[0] - item[0]) + abs(pivot[1] - item[1])
-        if length == 0:
-            spath.insert(0, [pivot[0], pivot[1]])
-        elif length == 1:
-            spath.insert(0, [item[0], item[1]])
-            pivot = item
-
-
-def FindShortestPath(path):
-    spath = []
-    pivot = path[len(path) - 1]
-    # print(path[len(path) - 1])
-    checkLength(path, spath, pivot)
-    return spath
-
-
-def ConvertToStep(path):
-    convertedPath = []
-    for idx, step in list(enumerate(path)):
-
-        if step == path[-1]:
-            break
-        # current [3, 2] vs [4, 2]
-        if step[0] < path[idx+1][0]:
-            convertedPath.append("down")
-        if step[0] > path[idx+1][0]:
-            convertedPath.append("up")
-
-        # [3, 2] vs [3,3]
-        if step[1] < path[idx+1][1]:
-            convertedPath.append("right")
-        if step[1] > path[idx+1][1]:
-            convertedPath.append("left")
-    return convertedPath
-
-
-def WriteToText(context, filename="action.txt"):
-    context = "\n".join(context)
-    print(context, type(context))
-    f = open(filename, "w")
-    f.write(context)
-    f.close()
-
-
-#########
-def find_path():
-    path=[]
-    single_path = CreatePath(grid, start, coin, queue, visited, path)
-
-    print("This is all the paths that the bot've gone to:")
-    print(single_path)
-
-    print("This is the shortest path:")
-    shortestPathCoor = FindShortestPath(single_path)
-    shortestPathStep = ConvertToStep(shortestPathCoor)
-    print(shortestPathCoor)
-    print(shortestPathStep)
-
-    print("Saving into action.txt")
-
-    WriteToText(shortestPathStep)
-if __name__ == "__main__":
-    find_path()
+    def find_path(self):
+        path = AStar(self).find_shortest_path(self.grid)
+        return path
+    def get_all_neighbor(self,point):
+        return [[point[0], point[1]-1],
+                [point[0], point[1]+1],
+                [point[0]-1, point[1]],
+                [point[0]+1, point[1]]]
+    def get_new_end(self):
+        #grid = Map()
+        midpoint = Cell(round(self.grid.width/2), round(self.grid.height/2))
+        if midpoint.coor() in self.grid.obstacles:
+            visited = []
+            queue = []
+            visited.append(midpoint.coor())
+            queue.append(midpoint.coor())
+            while queue:
+                m = queue.pop(0)
+                for neighbor in self.get_all_neighbor(m):
+                    if neighbor not in self.grid.obstacles:
+                        return Cell(neighbor[0], neighbor[1])
+                    if neighbor not in visited:
+                        visited.append(neighbor)
+                        queue.append(neighbor)
+        return midpoint
+    def convert_to_step(self, start, dest):
+            # current [3, 2] vs [4, 2]
+        dir = None
+        if (start[0] > dest[0] ) and (start[1]  == dest[1]):
+            self.stop_time = time.time()
+            dir = 'up'
+            return dir 
+        if (start[0] < dest[0] ) and (start[1]  == dest[1]):
+            self.stop_time = time.time()
+            dir = 'down'
+            return dir
+        if (start[0] == dest[0] ) and (start[1]  > dest[1]):
+            self.stop_time = time.time()
+            dir = 'left'
+            return dir
+        if (start[0] == dest[0] ) and (start[1]  < dest[1]):
+            self.stop_time = time.time()
+            dir = 'right'
+            return dir 
+    def write_to_json(self, index):
+        '''with open("maze_metadata.json", "r") as jsonFile:
+            data = jsonFile.read()
+            if len(data) == 0:
+                print("File is empty")
+                return
+            try:
+                data = json.loads(data)
+            except json.decoder.JSONDecodeError as e:
+                print("Invalid JSON data")
+                print(e)
+                return
+        data["bots"][index]['status'] = "stop"
+        with open("maze_metadata.json", "w") as jsonFile:
+            json.dump(data, jsonFile)'''
+        try:
+            with open("maze_metadata.json", "r", encoding="utf-8") as jsonFile:
+                data=json.load(jsonFile)
+            data["bots"][index]['status'] = "stop"
+            with open("maze_metadata.json", "w") as jsonFile:
+                json.dump(data, jsonFile)
+        except json.decoder.JSONDecodeError:
+            time.sleep(0.1)
+        
+        
+    def write_to_text(self, content, filename, time):
+        f = open(filename, 'a')
+        f.write(content + ' ' + str(time))
+        f.write('\n')
+        f.close()
