@@ -22,7 +22,8 @@ class Bot(Character):
         self.moveSet = data
 
     def gameOver(self):
-        # self.playSound("death")
+        self.playSound("death")
+        self.setEliminatedImage("./assets/images/death.gif")
         audioDuration = self.deathVoice.get_length() if self.deathVoice != None else 0
 
         sleep(audioDuration)

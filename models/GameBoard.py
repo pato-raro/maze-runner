@@ -1,10 +1,9 @@
 import random
 import pygame
-import asyncio
+from .Maze import Maze
 from .Maze import Maze
 from utils.constants import WINDOW, BOARD_SIZE, CLOCK, FPS, TIME_LIMIT
 from utils.helper import setJsonData, renderText
-import time
 
 
 class GameBoard:
@@ -20,12 +19,13 @@ class GameBoard:
         self.board = Maze(self.filePath, ballStar)
         self.board.initBotList()
         self.winner = self.board.botList[0]
+        self.loser = None
 
     def start(self):
+        pygame.mixer.Channel(2).play(self.background_sound, -1)
         self.background_sound.set_volume(0.3)
-        ballStar = 0
-        # pygame.mixer.Channel(2).play(self.background_sound, -1)
 
+        ballStar = 0
         self.initGame(ballStar)
         self.board.render(WINDOW, self.timeLeft)
         running = True
@@ -41,8 +41,8 @@ class GameBoard:
             self.countdown()
             if not self.isGameOver:
                 coinLocation = self.board.maze["coin"]
-
                 self.initGame(ballStar)
+
                 if self.board.maze["screen"] == False:
                     self.board.render(WINDOW, self.timeLeft)
                     setJsonData(self.filePath, self.board.maze)
@@ -52,25 +52,27 @@ class GameBoard:
                         self.winner = bot
                     if bot.location == coinLocation:
                         ballStar = random.randint(0, 6)
-                        setJsonData(self.filePath, self.board.maze)
-                    if bot.name == "tadao":
-                        bot.status = " eliminated"
+                        print(ballStar)
 
                     if bot.status == "eliminated":
                         bot.gameOver()
+                        self.loser = bot
+                        self.winner = next(
+                            x for x in self.board.botList if x.name != bot.name)
                         self.isGameOver = True
-                        bot.setImage("./assets/images/death.gif")
-                        time.sleep(2)
                         break
 
-                
             else:
-                highest_score_bot = 0
-                for bot in self.board.botList:
-                    if bot.score == self.winner.score:
-                        highest_score_bot += 1
-                running = False
-                self.gameOver(highest_score_bot)
+                if self.loser != None:
+                    running = False
+                    self.gameOver(0)
+                else:
+                    highest_score_bot = 0
+                    for bot in self.board.botList:
+                        if bot.score == self.winner.score:
+                            highest_score_bot += 1
+                    running = False
+                    self.gameOver(highest_score_bot)
 
     def countdown(self):
         total_mins = int(self.timeLeft//60)  # minutes left
@@ -108,12 +110,12 @@ class GameBoard:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN:
                         return self.reset_game()
-                
+
             s = pygame.Rect(0, 0, 300, 150)
             s.center = tuple(x // 2 for x in BOARD_SIZE)
             pygame.draw.rect(WINDOW, pygame.Color("#ffffff80"), s)
 
-            if highest_score_bot == 1:
+            if highest_score_bot < 2:
                 renderText(WINDOW, f"{winner} wins!", s.centerx,
                            s.centery - 20, 32, center=True)
             elif highest_score_bot == 2:

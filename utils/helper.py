@@ -87,19 +87,20 @@ def drawMaze(surface, maze, config, botList, elapsedTime=None):
     surface.blit(background, (0, 0 + headerHeight))
     renderTime(surface, elapsedTime, size * maze['width'], headerHeight)
     width, height, obstacles, bots, coin, screen = maze.values()
-    botPositionList = list(map(lambda bot: bot.location, botList))
+    # botPositionList = list(map(lambda bot: bot.location, botList))
     for i in range(height):
         for j in range(width):
             location = [i, j]
-            if location in botPositionList:
-                botIndex = botPositionList.index(location)
-                renderScore(surface, botIndex, botList[botIndex])
-                if botList[botIndex].status != "eliminated":
-                    surface.blit(botList[botIndex].image,
-                                    (j * size, i * size + headerHeight))
-                else:
-                    surface.blit(botList[botIndex].eliminated,
-                                    (j * size, i * size + headerHeight))
+            for bot in botList:
+                if location == bot.location:
+                    botIndex = botList.index(bot)
+                    renderScore(surface, botIndex, bot)
+                    if bot.status != "eliminated":
+                        surface.blit(bot.image,
+                                        (j * size, i * size + headerHeight))
+                    else:
+                        surface.blit(bot.eliminated,
+                                        (j * size, i * size + headerHeight))
             if location == coin:
                 surface.blit(coinImage, (j * size, i * size + headerHeight))
             if location in obstacles:
