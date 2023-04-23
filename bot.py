@@ -91,7 +91,7 @@ class Bot:
             self.stop_time = time.time()
             dir = 'right'
             return dir 
-    def write_to_json(self, index):
+    def write_to_json(self, json_location, index):
         '''with open("maze_metadata.json", "r") as jsonFile:
             data = jsonFile.read()
             if len(data) == 0:
@@ -107,10 +107,10 @@ class Bot:
         with open("maze_metadata.json", "w") as jsonFile:
             json.dump(data, jsonFile)'''
         try:
-            with open("maze_metadata.json", "r", encoding="utf-8") as jsonFile:
+            with open(json_location, "r", encoding="utf-8") as jsonFile:
                 data=json.load(jsonFile)
             data["bots"][index]['status'] = "stop"
-            with open("maze_metadata.json", "w") as jsonFile:
+            with open(json_location, "w") as jsonFile:
                 json.dump(data, jsonFile)
         except json.decoder.JSONDecodeError:
             time.sleep(0.1)

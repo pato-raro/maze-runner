@@ -7,7 +7,7 @@ def run_cli():
     parser.add_argument('-o', type=str, help="Output file name")
     args = parser.parse_args()
     return str(args.i), str(args.o)
-input_file, output_file = run_cli()
+
 def get_bot_index(data,bot_name):
     bot_lst = data['bots']
     index = 0
@@ -25,3 +25,4 @@ def import_dt(filename):
         return import_dt(filename)
 
 
+input_file, output_file = run_cli()
